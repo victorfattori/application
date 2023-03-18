@@ -2,9 +2,10 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { requete } from './requete';
 import { stop } from './stop';
-import { parler, responseData } from './parler';
-import React, { useState } from 'react';
+import { parler, a, recup } from './parler';
+import React, { useState, useEffect } from 'react';
 import { recuperation } from './recuperation';
+import { chaine, data } from './chaine';
 
 
 
@@ -14,33 +15,29 @@ export default function App() {
     console.log('You have been clicked a button!');
     // do something
   };
+
+
   
-
-
-  function myFunction1 () {
-    //const newVar = reponse;
-    //console.log(newVar);
-    //setMyVariable(newVar);
-    //console.log(maChaineDeCaracteres);
-    //console.log(newVar);
-    console.log(responseData);
+  const displayMessage = () => {
+    //setMessage(a);
+    console.log(a);
+    msg = parler();
+    console.log(msg);
   };
 
-//<Text style={styles.titre2}>{a}</Text>
-
-
-
+  const logData = () => {
+    parler().then(data => console.log(data));
+  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.titre}>Accueil</Text>
-      
       <TouchableOpacity
         onPress={function (){
-          recuperation()
+          displayMessage()
         }}
         style={styles.roundButton4}>
-        <Text style={styles.texte}>Lancement traduction</Text>
+          <Text style={styles.texte}>Recuperation</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={function (){
@@ -57,9 +54,7 @@ export default function App() {
         <Text style={styles.texte}>Arrêter traduction</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={function (){
-          parler()
-        }}
+        onPress= {logData}
         style={styles.roundButton3}>
         <Text style={styles.texte}>Vocal</Text>
       </TouchableOpacity>
@@ -113,9 +108,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 100,
-    backgroundColor: 'yellow',
+    backgroundColor: 'orange',
     position: 'absolute',
-    bottom: 100,
+    bottom: 50,
   },
   button: {
     backgroundColor: '#4CAF50',
@@ -131,6 +126,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
+  },
+  texte2: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: 'black',
   },
   titre: {
     fontSize: 30,
