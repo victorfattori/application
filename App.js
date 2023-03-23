@@ -1,68 +1,66 @@
 import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { requete } from './requete';
+import { StyleSheet, Image, Text, View, TouchableOpacity } from 'react-native';
+import { launchRaspberry } from './launchRaspberry';
 import { stop } from './stop';
-import { parler, a, recup } from './parler';
-import React, { useState, useEffect } from 'react';
-import { recuperation } from './recuperation';
-import { chaine, data } from './chaine';
+import { getSpeechToText } from './getSpeechToText';
+import React, { useState } from 'react';
+import { registerRootComponent } from 'expo';
+import Toast from 'react-native-toast-message';
 
 
 
 
 export default function App() {
-  const buttonClickedHandler = () => {
-    console.log('You have been clicked a button!');
-    // do something
+
+  const updateSpeechToTextState = async () => {
+    Toast.show({
+      type: 'info',
+      text1: 'Je vous écoute',
+    });
+    const data = await getSpeechToText();
+    console.log(data);
+    setSpeechToTextReponse(data);
   };
 
-
-  
-  const displayMessage = () => {
-    //setMessage(a);
-    console.log(a);
-    msg = parler();
-    console.log(msg);
-  };
-
-  const logData = () => {
-    parler().then(data => console.log(data));
-  }
+  const [speechToTextReponse, setSpeechToTextReponse] = useState('');
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titre}>Accueil</Text>
-      <TouchableOpacity
-        onPress={function (){
-          displayMessage()
-        }}
-        style={styles.roundButton4}>
-          <Text style={styles.texte}>Recuperation</Text>
+      <Image 
+        source={require('./assets/esme.png')} 
+        style={styles.img} 
+      />
+
+      <TouchableOpacity onPress={updateSpeechToTextState} style={styles.roundButton3}>
+        <Image
+          source={require('./assets/mic.png')}
+          style={styles.image}
+        />
       </TouchableOpacity>
+      <Toast ref={ref => Toast.setRef=ref} />
+
       <TouchableOpacity
         onPress={function (){
-          requete()
+          launchRaspberry()
         }}
         style={styles.roundButton1}>
-        <Text style={styles.texte}>Lancement traduction</Text>
+        <Text style={styles.texte}>Lancement {"\n"} traduction</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={function (){
           stop()
         }}
         style={styles.roundButton2}>
-        <Text style={styles.texte}>Arrêter traduction</Text>
+        <Text style={styles.texte}>   Arrêter {"\n"}traduction</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress= {logData}
-        style={styles.roundButton3}>
-        <Text style={styles.texte}>Vocal</Text>
-      </TouchableOpacity>
+      
+      <View style = {styles.separator}/>
+      <Text style={styles.reponse}>{speechToTextReponse}</Text>
+
       <StatusBar style="auto" />
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -73,75 +71,69 @@ const styles = StyleSheet.create({
 
   },
   roundButton1: {
-    width: 220,
-    height: 120,
+    width: 140,
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 100,
     backgroundColor: 'green',
     position: 'absolute',
-    bottom: 500,
+    left: 40,
+    bottom: 480,
   },
   roundButton2: {
-    width: 220,
-    height: 120,
+    width: 140,
+    height: 140,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 100,
     backgroundColor: 'red',
     position: 'absolute',
-    bottom: 350,
+    right: 40,
+    bottom: 480,
   },
   roundButton3: {
-    width: 220,
-    height: 120,
+    width: 80,
+    height: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 100,
-    backgroundColor: 'blue',
     position: 'absolute',
-    bottom: 200,
-  },
-  roundButton4: {
-    width: 220,
-    height: 120,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 100,
-    backgroundColor: 'orange',
-    position: 'absolute',
-    bottom: 50,
-  },
-  button: {
-    backgroundColor: '#4CAF50',
-    borderRadius: 5,
-    padding: 10,
-    margin: 10,
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 20,
+    bottom: 330,
   },
   texte: {
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
   },
-  texte2: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: 'black',
+  separator: {
+    height: 3,
+    width: '100%',
+    backgroundColor: 'black',
+    marginBottom: 50,
   },
-  titre: {
-    fontSize: 30,
-    fontWeight: 'bold',
+  img: {
     position: 'absolute',
-    bottom: 700,
+    top: 40, // Position the image at the top
+    right: 10, // Position the image to the right
+    width: 50, // Set the width of the image
+    height: 50, // Set the height of the image
+    width: 150,
+    height: 150,
+
   },
-  titre2: {
-    fontSize: 30,
-    fontWeight: 'bold',
+  touchable:{
+    width: 50, // Définissez la largeur de la zone cliquable
+    height: 50, // Définissez la hauteur de la zone cliquable
+  },
+  image: {
+    width: '100%', // Définissez la largeur de l'image sur 100% de la zone cliquable
+    height: '100%', // Définissez la hauteur de l'image
+  },
+  reponse: {
+    fontSize: 20,
     position: 'absolute',
-    bottom: 650,
+    bottom: 150,
   }
 });
+
+registerRootComponent(App);
